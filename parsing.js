@@ -1,16 +1,10 @@
-// Load the xml file using ajax 
-$.ajax({
-    type: "GET",
-    url: "sdn.xml",
-    dataType: "xml",
-    success: function (xml) {
-        // console.log(xml);
-        // Parse the xml file and get data
-        var xmlDoc = xml2json(xml);
-        var stringifiedDoc = JSON.stringify(xmlDoc);
-        var parsedDoc = JSON.parse(stringifiedDoc);
-        // console.log(parsedDoc);
-            // $xml = $(xmlDoc);
-            // $("body").append($xml);
-    }
-});
+// Load the xml file
+var myXml = new XMLHttpRequest();
+var myXmlData;
+
+myXml.open("GET","sdn.xml",false);
+myXml.onloadend = function(d) {
+  myXmlData = myXml.responseXML;  
+  console.log('load end');
+}
+myXml.send();
