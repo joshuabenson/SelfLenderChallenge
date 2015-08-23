@@ -18,13 +18,13 @@ function popNodes() {
       success:findRoots
   });
 }
+//Finds the root node of each match (currently just finds matching country node)
 function findRoots(xml) {
   countries.forEach(function(cNode) {
-    
+    countryNodes[cNode['name']] =  $(xml).find('country:contains(' + cNode['name'] + ')');
   });
-  // cuba = $(xml).find('country:contains(Cuba)');
+  $(countryNodes).trigger('populated');
 }
-
 var countries = [
   {"name": "Afghanistan", "code": "AF"}, 
   {"name": "Åland Islands", "code": "AX"}, 
@@ -269,4 +269,5 @@ var countries = [
   {"name": "Yemen", "code": "YE"}, 
   {"name": "Zambia", "code": "ZM"}, 
   {"name": "Zimbabwe", "code": "ZW"} 
-]
+];
+popNodes();
