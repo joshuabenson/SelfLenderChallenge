@@ -1,0 +1,25 @@
+{
+  "name": "selflenderchallenge",
+  "version": "0.0.1",
+  "description": "D3 figure of xml data",
+  "main": "parse.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshuabenson/SelfLenderChallenge.git"
+  },
+  "keywords": [
+    "D3"
+  ],
+  "author": "Joshua Benson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joshuabenson/SelfLenderChallenge/issues"
+  },
+  "homepage": "https://github.com/joshuabenson/SelfLenderChallenge",
+  "dependencies": {
+    "d3": "^3.5.6"
+  }
+}
