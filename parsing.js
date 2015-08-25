@@ -4,36 +4,39 @@ var myXmlData;
 var countryNodes = {};
 var countryCont = [];
 var trigFlag = false;
-var contTree = [
-  {
-    "name": "AF",
-    "children": []
-  },
-  {
-    "name": "AN",
-    "children": []
-  },
-  {
-    "name": "AS",
-    "children": []
-  },
-  {
-    "name": "EU",
-    "children": []
-  },
-  {
-    "name": "NA",
-    "children": []
-  },
-  {
-    "name": "OC",
-    "children": []
-  },
-  {
-    "name": "SA",
-    "children": []
-  },          
-];
+var contTree = {
+  "name":"D3",
+  "children": [
+    {
+      "name": "AF",
+      "children": []
+    },
+    {
+      "name": "AN",
+      "children": []
+    },
+    {
+      "name": "AS",
+      "children": []
+    },
+    {
+      "name": "EU",
+      "children": []
+    },
+    {
+      "name": "NA",
+      "children": []
+    },
+    {
+      "name": "OC",
+      "children": []
+    },
+    {
+      "name": "SA",
+      "children": []
+    }
+  ]       
+};
 
 function popNodes() {
   $.ajax({
@@ -43,7 +46,17 @@ function popNodes() {
       success:findRoots
   });
 }
-//Finds the root node of each match (currently just finds matching country node)
+//Finds the root node of each match 
+function findRoot(node, result) {
+  if ($(node).is('sdnentry')) {
+    return node;
+  }
+  if (node.parentNode) return findRoot(node.parentNode);
+}
+//Find entrys matching the country name
+  //Find the parent node
+  //Check to see if that node is already in the list for that country
+  //if it is not, add it to the list
 function findRoots(xml) {
   countryCont.forEach(function(cNode) {
     var temp = $(xml).find('country:contains(' + cNode['name'] + ')'); //get a collection of matching nodes
@@ -51,29 +64,24 @@ function findRoots(xml) {
       var newTemp = [];
       for (var key in temp) {
         if (temp[key].innerHTML) {
-          newTemp.push(
-            {
-              "name": /*temp[key].innerHTML*/"",
-              "colour": "#b49a3d"
-            }
-          );
+          newTemp.push(findRoot(temp[key]));
         }
       }
-      contTree.forEach(function(coNode) {
+      console.log(newTemp);
+      contTree.children.forEach(function(coNode) {
         if (coNode['name']===cNode['cont']) {
           coNode['children'].push(
             {
               "name": cNode['name'],
-              "children": newTemp
+              "size": newTemp.length
             }
           );
         }
       });
-    }  
+    }
     // console.log(contTree);
     // countryNodes[cNode['name']] =  $(xml).find('country:contains(' + cNode['name'] + ')');
   });
-  //Crutch alert:
     $(contTree).trigger('populated');
 }
 var countries = [

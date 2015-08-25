@@ -24,13 +24,13 @@ var arc = d3.svg.arc()
     .endAngle(function(d) { return d.x + d.dx - .01 / (d.depth + .5); })
     .innerRadius(function(d) { return radius / 3 * d.depth; })
     .outerRadius(function(d) { return radius / 3 * (d.depth + 1) - 1; });
-function init(contTree) {
+var init = function(root) {
     // Compute the initial layout on the entire tree to sum sizes.
     // Also compute the full name and fill color for each node,
     // and stash the children so they can be restored as we descend.
     partition
         .value(function(d) { return d.size; })
-        .nodes(contTree)
+        .nodes(root)
         .forEach(function(d) {
           d._children = d.children;
           d.sum = d.value;
@@ -55,8 +55,17 @@ function init(contTree) {
       .enter().append("path")
         .attr("d", arc)
         .style("fill", function(d) { return d.fill; })
-        .each(function(d) { this._current = updateArc(d); })
+        .each(function(d) {this._current = updateArc(d); })
         .on("click", zoomIn);
+
+    // var labelGroups = path.append("circle")
+    //       .attr("class", "node")
+    //       .attr("r", 5)
+    //       .style("fill", function(d) { return })
+    
+    var labels = path.append("p")
+      .text(function(d) { return d.name; });
+       // .html('<div style="width: 150px;">This is some information about whatever</div>')
 
     function zoomIn(p) {
       if (p.depth > 1) p = p.parent;
@@ -118,7 +127,11 @@ function init(contTree) {
             .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); });
       });
     }
-  }
+  };
+
+$(contTree).on('populated', function(){
+  init(contTree);
+});
 
 function key(d) {
   var k = [], p = d;
