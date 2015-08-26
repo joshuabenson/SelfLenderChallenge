@@ -59,8 +59,9 @@ function findRoot(node, result) {
   //if it is not, add it to the list
 function findRoots(xml) {
   countryCont.forEach(function(cNode) {
-    var temp = $(xml).find('country:contains(' + cNode['name'] + ')'); //get a collection of matching nodes
-    if (temp.length) {
+    var countryTag = $(xml).find('country:contains(' + cNode['name'] + ')'); //get a collection of matching nodes
+    var programTag = $(xml).find('program:contains(' + cNode['name'] + ')');
+    var addressTag = $(xml).find('address:contains(' + cNode['name'] + ')');
       var newTemp = [];
       for (var key in temp) {
         if (temp[key].innerHTML) {
@@ -68,6 +69,7 @@ function findRoots(xml) {
         }
       }
       console.log(newTemp);
+  });
       contTree.children.forEach(function(coNode) {
         if (coNode['name']===cNode['cont']) {
           coNode['children'].push(
@@ -78,10 +80,9 @@ function findRoots(xml) {
           );
         }
       });
-    }
+
     // console.log(contTree);
     // countryNodes[cNode['name']] =  $(xml).find('country:contains(' + cNode['name'] + ')');
-  });
     $(contTree).trigger('populated');
 }
 var countries = [
