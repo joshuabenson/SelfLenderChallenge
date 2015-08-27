@@ -4,6 +4,8 @@ var myXmlData;
 var countryNodes = {};
 var countryCont = [];
 var trigFlag = false;
+var searches = ['country', 'program', 'address', 'idCountry', 'placeOfBirth'];
+var searchResults = [];
 var contTree = {
   "name":"D3",
   "children": [
@@ -57,33 +59,53 @@ function findRoot(node, result) {
   //Find the parent node
   //Check to see if that node is already in the list for that country
   //if it is not, add it to the list
+
+function findCountryTag(sdnNode, tag, depth) {
+  var target;
+  depth = depth || 0
+  if ($(sdnNode).is(tag)) return sdnNode;
+  for (var i = 0; i < sdnNode.children.length; i++) {
+    if ($(sdnNode.children[i]).is(tag)) {
+       return target = sdnNode.children[i];
+    } else {
+      target = findCountryTag(sdnNode.children[i], tag, depth + 1);
+      if (target) return target;
+    }
+  }
+  return target;
+}
+
 function findRoots(xml) {
-  countryCont.forEach(function(cNode) {
-    var countryTag = $(xml).find('country:contains(' + cNode['name'] + ')'); //get a collection of matching nodes
-    var programTag = $(xml).find('program:contains(' + cNode['name'] + ')');
-    var addressTag = $(xml).find('address:contains(' + cNode['name'] + ')');
-      var newTemp = [];
-      for (var key in temp) {
-        if (temp[key].innerHTML) {
-          newTemp.push(findRoot(temp[key]));
+  var allSdnEntries = $(xml).find('sdnEntry'); //get a collection of sdnEntry nodes
+  for (var key in allSdnEntries) {
+    if (allSdnEntries[key].innerHTML) {
+      var toAdd = findCountryTag(allSdnEntries[key], 'programList')
+      toAdd ? searchResults.push(toAdd) : 0
+    }
+  }
+  // countryCont.forEach(function(cNode) {
+  //   var countryTag = $(xml).find('country:contains(' + cNode['name'] + ')'); //get a collection of matching nodes
+
+  //   for (var key in countryTag) {
+  //     if (countryTag[key].innerHTML) {
+  //       searchResults.push(findRoot(countryTag[key]));
+  //     }
+  //   }
+  // });
+      console.log(searchResults);
+  contTree.children.forEach(function(coNode) {
+      coNode['children'].push(
+        {
+          // "name": cNode['name'],
+          // "size": newTemp.length
         }
-      }
-      console.log(newTemp);
+      );
+
   });
-      contTree.children.forEach(function(coNode) {
-        if (coNode['name']===cNode['cont']) {
-          coNode['children'].push(
-            {
-              "name": cNode['name'],
-              "size": newTemp.length
-            }
-          );
-        }
-      });
 
     // console.log(contTree);
     // countryNodes[cNode['name']] =  $(xml).find('country:contains(' + cNode['name'] + ')');
-    $(contTree).trigger('populated');
+  $(contTree).trigger('populated');
 }
 var countries = [
   {"name": "Afghanistan", "code": "AF"}, 
