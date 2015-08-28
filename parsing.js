@@ -60,7 +60,7 @@ function findRoot(node, result) {
   //Check to see if that node is already in the list for that country
   //if it is not, add it to the list
 
-function findCountryTag(sdnNode, tag, depth) {
+function findTag(sdnNode, tag, depth) {
   var target;
   depth = depth || 0
   if ($(sdnNode).is(tag)) return sdnNode;
@@ -68,7 +68,7 @@ function findCountryTag(sdnNode, tag, depth) {
     if ($(sdnNode.children[i]).is(tag)) {
        return target = sdnNode.children[i];
     } else {
-      target = findCountryTag(sdnNode.children[i], tag, depth + 1);
+        target = findTag(sdnNode.children[i], tag, depth + 1);
       if (target) return target;
     }
   }
@@ -79,30 +79,33 @@ function findRoots(xml) {
   var allSdnEntries = $(xml).find('sdnEntry'); //get a collection of sdnEntry nodes
   for (var key in allSdnEntries) {
     if (allSdnEntries[key].innerHTML) {
-      var toAdd = findCountryTag(allSdnEntries[key], 'programList')
-      toAdd ? searchResults.push(toAdd) : 0
+      var toAdd = findTag(allSdnEntries[key], 'country') || findTag(allSdnEntries[key], 'idCountry') || findTag(allSdnEntries[key], 'program')
+        countryCont.forEach(function(country){
+          if (country['name']===toAdd.innerHTML) {
+            country['children'] ? country['children'].push(toAdd) : country['children'] = [toAdd]
+          }
+        });
+          searchResults.push(toAdd);
     }
-  }
-  // countryCont.forEach(function(cNode) {
-  //   var countryTag = $(xml).find('country:contains(' + cNode['name'] + ')'); //get a collection of matching nodes
-
+  }  
   //   for (var key in countryTag) {
   //     if (countryTag[key].innerHTML) {
   //       searchResults.push(findRoot(countryTag[key]));
   //     }
   //   }
-  // });
-      console.log(searchResults);
-  contTree.children.forEach(function(coNode) {
-      coNode['children'].push(
-        {
-          // "name": cNode['name'],
-          // "size": newTemp.length
-        }
-      );
-
+  countryCont.forEach(function(countryNode){
+    contTree.children.forEach(function(coNode) {
+      if (countryNode['cont']===coNode['name'] && countryNode.children) {
+        coNode['children'].push(
+          {
+            "name": countryNode['name'],
+            "size": countryNode.children.length
+          }
+        );
+      }
+    });
   });
-
+  console.log(contTree);
     // console.log(contTree);
     // countryNodes[cNode['name']] =  $(xml).find('country:contains(' + cNode['name'] + ')');
   $(contTree).trigger('populated');
@@ -210,7 +213,7 @@ var countries = [
   {"name": "Iceland", "code": "IS"}, 
   {"name": "India", "code": "IN"}, 
   {"name": "Indonesia", "code": "ID"}, 
-  {"name": "Iran, Islamic Republic Of", "code": "IR"}, 
+  {"name": "Iran", "code": "IR"}, 
   {"name": "Iraq", "code": "IQ"}, 
   {"name": "Ireland", "code": "IE"}, 
   {"name": "Isle of Man", "code": "IM"}, 
@@ -223,7 +226,7 @@ var countries = [
   {"name": "Kazakhstan", "code": "KZ"}, 
   {"name": "Kenya", "code": "KE"}, 
   {"name": "Kiribati", "code": "KI"}, 
-  {"name": "Korea, Democratic People\"S Republic of", "code": "KP"}, 
+  {"name": "DPRK", "code": "KP"}, 
   {"name": "Korea, Republic of", "code": "KR"}, 
   {"name": "Kuwait", "code": "KW"}, 
   {"name": "Kyrgyzstan", "code": "KG"}, 
@@ -275,7 +278,7 @@ var countries = [
   {"name": "Oman", "code": "OM"}, 
   {"name": "Pakistan", "code": "PK"}, 
   {"name": "Palau", "code": "PW"}, 
-  {"name": "Palestinian Territory, Occupied", "code": "PS"}, 
+  {"name": "Palestinian", "code": "PS"}, 
   {"name": "Panama", "code": "PA"}, 
   {"name": "Papua New Guinea", "code": "PG"}, 
   {"name": "Paraguay", "code": "PY"}, 
