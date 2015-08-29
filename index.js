@@ -1,6 +1,9 @@
 //adapted from http://bl.ocks.org/mbostock/5944371
 var margin = {top: 350, right: 480, bottom: 350, left: 480},
-    radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) - 10;
+    radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) - 10,
+    x = d3.scale.linear().range([0, 2 * Math.PI]),
+    padding = 5,
+    y = d3.scale.pow().exponent(1.3).domain([0, 1]).range([0, radius]);
 
 var hue = d3.scale.category10();
 
@@ -52,20 +55,32 @@ var init = function(root) {
 
     var path = svg.selectAll("path")
         .data(partition.nodes(root).slice(1))
-      .enter().append("path")
+        .enter().append("path")
         .attr("d", arc)
-        .style("fill", function(d) { return d.fill; })
+        .style("fill", function(d) { console.log(d); return d.fill; })
         .each(function(d) {this._current = updateArc(d); })
-        .on("click", zoomIn);
+        .on("click", zoomIn)
+        .html(function(d) { return d.name; })
+        .style("text-align", "center");
+        
+    var text = svg.selectAll("text").data(partition.nodes(root).slice(1));
+    var textEnter = text.enter().append("text")
+        .text( function (d) { return d.name; })
+        .attr("font-family", "sans-serif")
+        .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
+        .attr("x", function(d) { return (d.y); })
+        .attr("dx", "6") // margin
+        .attr("dy", ".35em") // vertical-align
+        .attr("font-family", "sans-serif")
 
-    // var labelGroups = path.append("circle")
-    //       .attr("class", "node")
-    //       .attr("r", 5)
-    //       .style("fill", function(d) { return })
-    
-    var labels = path.append("p")
-      .text(function(d) { return d.name; });
-       // .html('<div style="width: 150px;">This is some information about whatever</div>')
+    var labels = path.append("div").append("text")
+      .text(function(d) { return d.name; })
+      .attr("class", "text-label")
+      .style("text-anchor", "middle")
+      
+    function computeTextRotation(d) {
+      return ((d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
+    }
 
     function zoomIn(p) {
       if (p.depth > 1) p = p.parent;
@@ -156,6 +171,7 @@ function arcTween(b) {
 }
 
 function updateArc(d) {
+  console.log(d);
   return {depth: d.depth, x: d.x, dx: d.dx};
 }
 
