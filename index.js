@@ -27,7 +27,7 @@ var arc = d3.svg.arc()
     .endAngle(function(d) { return d.x + d.dx - .01 / (d.depth + .5); })
     .innerRadius(function(d) { return radius / 3 * d.depth; })
     .outerRadius(function(d) { return radius / 3 * (d.depth + 1) - 1; });
-var init = function(root) {
+  function init(root) {
     // Compute the initial layout on the entire tree to sum sizes.
     // Also compute the full name and fill color for each node,
     // and stash the children so they can be restored as we descend.
@@ -50,33 +50,34 @@ var init = function(root) {
         .attr("r", radius / 3)
         .on("click", zoomOut);
 
-    center.append("title")
-        .text("zoom out");
+    // center.append("title")
+    //     .text("zoom out");
 
     var path = svg.selectAll("path")
         .data(partition.nodes(root).slice(1))
         .enter().append("path")
         .attr("d", arc)
-        .style("fill", function(d) { console.log(d); return d.fill; })
+        .style("fill", function(d) { return d.fill; })
         .each(function(d) {this._current = updateArc(d); })
         .on("click", zoomIn)
         .html(function(d) { return d.name; })
         .style("text-align", "center");
-        
-    var text = svg.selectAll("text").data(partition.nodes(root).slice(1));
-    var textEnter = text.enter().append("text")
-        .text( function (d) { return d.name; })
-        .attr("font-family", "sans-serif")
-        .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
-        .attr("x", function(d) { return (d.y); })
-        .attr("dx", "6") // margin
-        .attr("dy", ".35em") // vertical-align
-        .attr("font-family", "sans-serif")
-
-    var labels = path.append("div").append("text")
-      .text(function(d) { return d.name; })
-      .attr("class", "text-label")
-      .style("text-anchor", "middle")
+    function addLabels(subRoot) {
+    var text = svg.selectAll("text").data(partition.nodes(subRoot).slice(1));
+      
+      var textEnter = text.enter().append("text")
+          .text( function (d) { return d.name; })
+          .attr("font-family", "sans-serif")
+          .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
+          .attr("x", function(d) { return (50 + d.y); })
+          .attr("dx", "6") // margin
+          .attr("dy", ".35em") // vertical-align
+          .attr("font-family", "sans-serif")
+      var labels = path.append("div").append("text")
+        .text(function(d) { return d.name; })
+        .attr("class", "text-label")
+        .style("text-anchor", "middle")
+    }
       
     function computeTextRotation(d) {
       return ((d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
@@ -86,6 +87,7 @@ var init = function(root) {
       if (p.depth > 1) p = p.parent;
       if (!p.children) return;
       zoom(p, p);
+      // addLabels();
     }
 
     function zoomOut(p) {
@@ -114,6 +116,7 @@ var init = function(root) {
       }
 
       center.datum(root);
+      addLabels(p);
 
       // When zooming in, arcs enter from the outside and exit to the inside.
       // Entering outside arcs start from the old layout.
@@ -142,7 +145,7 @@ var init = function(root) {
             .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); });
       });
     }
-  };
+  }
 
 $(contTree).on('populated', function(){
   init(contTree);
@@ -171,7 +174,7 @@ function arcTween(b) {
 }
 
 function updateArc(d) {
-  console.log(d);
+  // console.log(d);
   return {depth: d.depth, x: d.x, dx: d.dx};
 }
 
