@@ -3,7 +3,8 @@ var margin = {top: 350, right: 480, bottom: 350, left: 480},
     radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) - 10,
     x = d3.scale.linear().range([0, 2 * Math.PI]),
     padding = 5,
-    y = d3.scale.pow().exponent(1.3).domain([0, 1]).range([0, radius]);
+    y = d3.scale.pow().exponent(1.3).domain([0, 1]).range([0, radius]),
+    textEnter, text;
 
 var hue = d3.scale.category10();
 
@@ -63,20 +64,20 @@ var arc = d3.svg.arc()
         .html(function(d) { return d.name; })
         .style("text-align", "center");
     function addLabels(subRoot) {
-    var text = svg.selectAll("text").data(partition.nodes(subRoot).slice(1));
+      text = svg.selectAll("text").data(partition.nodes(subRoot).slice(1));
       
-      var textEnter = text.enter().append("text")
+      textEnter = text.enter().append("text")
           .text( function (d) { return d.name; })
           .attr("font-family", "sans-serif")
           .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
-          .attr("x", function(d) { return (50 + d.y); })
+          .attr("x", function(d) { return (60 + d.y); })
           .attr("dx", "6") // margin
           .attr("dy", ".35em") // vertical-align
           .attr("font-family", "sans-serif")
-      var labels = path.append("div").append("text")
-        .text(function(d) { return d.name; })
-        .attr("class", "text-label")
-        .style("text-anchor", "middle")
+      // var labels = path.append("div").append("text")
+      //   .text(function(d) { return d.name; })
+      //   .attr("class", "text-label")
+      //   .style("text-anchor", "middle")
     }
       
     function computeTextRotation(d) {
@@ -93,6 +94,7 @@ var arc = d3.svg.arc()
     function zoomOut(p) {
       if (!p.parent) return;
       zoom(p.parent, p);
+      text.remove();
     }
 
     // Zoom to the specified new root.
