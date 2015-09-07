@@ -1,6 +1,6 @@
 //adapted from http://bl.ocks.org/mbostock/5944371
-var margin = {top: 350, right: 480, bottom: 350, left: 480},
-    radius = Math.min(margin.top, margin.right, margin.bottom, margin.left) - 10,
+var margin = {top: 450, right: 480, bottom: 350, left: 480},
+    radius = Math.min(margin.top, margin.right, margin.bottom, margin.left),
     x = d3.scale.linear().range([0, 2 * Math.PI]),
     padding = 5,
     y = d3.scale.pow().exponent(1.3).domain([0, 1]).range([0, radius]),
@@ -33,7 +33,8 @@ var arc = d3.svg.arc()
     // Also compute the full name and fill color for each node,
     // and stash the children so they can be restored as we descend.
     partition
-        .value(function(d) { return d.size; })
+        //return at least a size of 10, so slice can still be visible
+        .value(function(d) { return d.size >= 10 ? d.size : 10; })
         .nodes(root)
         .forEach(function(d) {
           d._children = d.children;
@@ -51,9 +52,6 @@ var arc = d3.svg.arc()
         .attr("r", radius / 3)
         .on("click", zoomOut);
 
-    // center.append("title")
-    //     .text("zoom out");
-
     var path = svg.selectAll("path")
         .data(partition.nodes(root).slice(1))
         .enter().append("path")
@@ -63,21 +61,17 @@ var arc = d3.svg.arc()
         .on("click", zoomIn)
         .html(function(d) { return d.name; })
         .style("text-align", "center");
+
     function addLabels(subRoot) {
       text = svg.selectAll("text").data(partition.nodes(subRoot).slice(1));
-      
       textEnter = text.enter().append("text")
-          .text( function (d) { return d.name; })
+          .text( function (d) { return d.name + '   -   ' + d.size })
           .attr("font-family", "sans-serif")
           .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
           .attr("x", function(d) { return (60 + d.y); })
           .attr("dx", "6") // margin
           .attr("dy", ".35em") // vertical-align
           .attr("font-family", "sans-serif")
-      // var labels = path.append("div").append("text")
-      //   .text(function(d) { return d.name; })
-      //   .attr("class", "text-label")
-      //   .style("text-anchor", "middle")
     }
       
     function computeTextRotation(d) {
@@ -94,6 +88,7 @@ var arc = d3.svg.arc()
     function zoomOut(p) {
       if (!p.parent) return;
       zoom(p.parent, p);
+      //remove the current label set
       text.remove();
     }
 
@@ -147,9 +142,11 @@ var arc = d3.svg.arc()
             .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); });
       });
     }
+    // addLabels(root);
   }
 
 $(contTree).on('populated', function(){
+  // console.log(contTree);
   init(contTree);
 });
 

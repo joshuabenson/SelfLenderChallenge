@@ -87,12 +87,7 @@ function findRoots(xml) {
         });
           searchResults.push(toAdd);
     }
-  }  
-  //   for (var key in countryTag) {
-  //     if (countryTag[key].innerHTML) {
-  //       searchResults.push(findRoot(countryTag[key]));
-  //     }
-  //   }
+  }
   countryCont.forEach(function(countryNode){
     contTree.children.forEach(function(coNode) {
       if (countryNode['cont']===coNode['name'] && countryNode.children) {
