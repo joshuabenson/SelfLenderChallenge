@@ -20,6 +20,9 @@
   },
   "homepage": "https://github.com/joshuabenson/SelfLenderChallenge",
   "dependencies": {
-    "d3": "^3.5.6"
+    "d3": "^3.5.6",
+    "express": "^4.0.0",
+    "nodemon": "^1.2.1"
+
   }
 }
