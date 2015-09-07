@@ -1,65 +1,56 @@
-// Load the xml file
-var myXml = new XMLHttpRequest();
-var myXmlData;
-var countryNodes = {};
-var countryCont = [];
-var trigFlag = false;
-var searches = ['country', 'program', 'address', 'idCountry', 'placeOfBirth'];
-var searchResults = [];
-var contTree = {
-  "name":"D3",
-  "children": [
-    {
-      "name": "AF",
-      "children": []
-    },
-    {
-      "name": "AN",
-      "children": []
-    },
-    {
-      "name": "AS",
-      "children": []
-    },
-    {
-      "name": "EU",
-      "children": []
-    },
-    {
-      "name": "NA",
-      "children": []
-    },
-    {
-      "name": "OC",
-      "children": []
-    },
-    {
-      "name": "SA",
-      "children": []
-    }
-  ]       
-};
-
+var myXml = new XMLHttpRequest(),
+    countryCont = [],
+    searchResults = [],
+    contTree = {
+      "name":"D3",
+      "children": [
+        {
+          "name": "AF",
+          "children": []
+        },
+        {
+          "name": "AN",
+          "children": []
+        },
+        {
+          "name": "AS",
+          "children": []
+        },
+        {
+          "name": "EU",
+          "children": []
+        },
+        {
+          "name": "NA",
+          "children": []
+        },
+        {
+          "name": "OC",
+          "children": []
+        },
+        {
+          "name": "SA",
+          "children": []
+        }
+      ]       
+    };
+  //Finds the root node of each match 
+  // function findRoot(node, result) {
+  //   if ($(node).is('sdnentry')) {
+  //     return node;
+  //   }
+  //   if (node.parentNode) return findRoot(node.parentNode);
+  // }
+//gets the xml file
 function popNodes() {
   $.ajax({
       type: "GET",
       url: 'sdn.xml',
       dataType: "xml",
-      success:findRoots
+      success:matchCountry
   });
 }
-//Finds the root node of each match 
-function findRoot(node, result) {
-  if ($(node).is('sdnentry')) {
-    return node;
-  }
-  if (node.parentNode) return findRoot(node.parentNode);
-}
-//Find entrys matching the country name
-  //Find the parent node
-  //Check to see if that node is already in the list for that country
-  //if it is not, add it to the list
-
+//findTag finds the node matching a tag name, so it can be checked for a country name match
 function findTag(sdnNode, tag, depth) {
   var target;
   depth = depth || 0
@@ -74,18 +65,19 @@ function findTag(sdnNode, tag, depth) {
   }
   return target;
 }
-
-function findRoots(xml) {
-  var allSdnEntries = $(xml).find('sdnEntry'); //get a collection of sdnEntry nodes
+//matchCountry searches tags for a country name match, populates contTree, then causes the chart to be loaded
+function matchCountry(xml) {
+  //get a collection of sdnEntry nodes
+  var allSdnEntries = $(xml).find('sdnEntry'); 
   for (var key in allSdnEntries) {
     if (allSdnEntries[key].innerHTML) {
-      var toAdd = findTag(allSdnEntries[key], 'country') || findTag(allSdnEntries[key], 'idCountry') || findTag(allSdnEntries[key], 'program')
+      var toAdd = findTag(allSdnEntries[key], 'country') || findTag(allSdnEntries[key], 'idCountry') || findTag(allSdnEntries[key], 'placeOfBirth') || findTag(allSdnEntries[key], 'program');
         countryCont.forEach(function(country){
           if (country['name']===toAdd.innerHTML) {
             country['children'] ? country['children'].push(toAdd) : country['children'] = [toAdd]
           }
         });
-          searchResults.push(toAdd);
+      searchResults.push(toAdd);
     }
   }
   countryCont.forEach(function(countryNode){
@@ -100,9 +92,7 @@ function findRoots(xml) {
       }
     });
   });
-  console.log(contTree);
-    // console.log(contTree);
-    // countryNodes[cNode['name']] =  $(xml).find('country:contains(' + cNode['name'] + ')');
+  //trigger 'populated', which is heard by index.js
   $(contTree).trigger('populated');
 }
 var countries = [
@@ -602,11 +592,9 @@ var continents = { /*Country Code:"Continent Code"*/
   ZM:"AF",
   ZW:"AF",
 };
-
 countries.forEach(function(obj) {
   var newObj = obj;
   newObj['cont'] = continents[obj['code']] 
   countryCont.push(newObj);
 });
-
 popNodes();
