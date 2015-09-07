@@ -1,39 +1,39 @@
 var myXml = new XMLHttpRequest(),
-    countryCont = [],
-    searchResults = [],
-    contTree = {
-      "name":"D3",
-      "children": [
-        {
-          "name": "AF",
-          "children": []
-        },
-        {
-          "name": "AN",
-          "children": []
-        },
-        {
-          "name": "AS",
-          "children": []
-        },
-        {
-          "name": "EU",
-          "children": []
-        },
-        {
-          "name": "NA",
-          "children": []
-        },
-        {
-          "name": "OC",
-          "children": []
-        },
-        {
-          "name": "SA",
-          "children": []
-        }
-      ]       
-    };
+countryCont = [],
+searchResults = [],
+contTree = {
+  "name":"D3",
+  "children": [
+    {
+      "name": "AF",
+      "children": []
+    },
+    {
+      "name": "AN",
+      "children": []
+    },
+    {
+      "name": "AS",
+      "children": []
+    },
+    {
+      "name": "EU",
+      "children": []
+    },
+    {
+      "name": "NA",
+      "children": []
+    },
+    {
+      "name": "OC",
+      "children": []
+    },
+    {
+      "name": "SA",
+      "children": []
+    }
+  ]       
+};
   //Finds the root node of each match 
   // function findRoot(node, result) {
   //   if ($(node).is('sdnentry')) {

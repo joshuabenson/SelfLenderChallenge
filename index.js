@@ -60,20 +60,21 @@ var arc = d3.svg.arc()
         .each(function(d) {this._current = updateArc(d); })
         .on("click", zoomIn)
         .html(function(d) { return d.name; })
-        .style("text-align", "center");
+        .style("text-align", "center")
 
     function addLabels(subRoot) {
       text = svg.selectAll("text").data(partition.nodes(subRoot).slice(1));
       textEnter = text.enter().append("text")
+          .attr("x",0)          
           .text( function (d) { return d.name + '   -   ' + d.size })
           .attr("font-family", "sans-serif")
           .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
+          .transition()
           .attr("x", function(d) { return (60 + d.y); })
           .attr("dx", "6") // margin
           .attr("dy", ".35em") // vertical-align
           .attr("font-family", "sans-serif")
-    }
-      
+    } 
     function computeTextRotation(d) {
       return ((d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
     }

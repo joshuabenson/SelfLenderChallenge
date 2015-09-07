@@ -7,6 +7,11 @@ circle {
   fill: none;
   pointer-events: all;
 }
-.chart-title {
-  color: red;    
+
+body {
+  text-align: center;
+}
+.instructions {
+  text-align: center;
+  font-family: sans-serif;  
 }
