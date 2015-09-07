@@ -20,14 +20,14 @@ var svg = d3.select("body").append("svg")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var partition = d3.layout.partition()
-    .sort(function(a, b) { return d3.ascending(a.name, b.name); })
-    .size([2 * Math.PI, radius]);
+  .sort(function(a, b) { return d3.ascending(a.name, b.name); })
+  .size([2 * Math.PI, radius]);
 
 var arc = d3.svg.arc()
-    .startAngle(function(d) { return d.x; })
-    .endAngle(function(d) { return d.x + d.dx - .01 / (d.depth + .5); })
-    .innerRadius(function(d) { return radius / 3 * d.depth; })
-    .outerRadius(function(d) { return radius / 3 * (d.depth + 1) - 1; });
+  .startAngle(function(d) { return d.x; })
+  .endAngle(function(d) { return d.x + d.dx - .01 / (d.depth + .5); })
+  .innerRadius(function(d) { return radius / 3 * d.depth; })
+  .outerRadius(function(d) { return radius / 3 * (d.depth + 1) - 1; });
 function init(root) {
   // Compute the initial layout on the entire tree to sum sizes.
   // Also compute the full name and fill color for each node,
@@ -146,7 +146,6 @@ function init(root) {
 }
 
 $(contTree).on('populated', function(){
-  // console.log(contTree);
   init(contTree);
 });
 

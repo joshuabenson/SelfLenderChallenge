@@ -61,7 +61,7 @@ function findTag(sdnNode, tag, depth) {
     if ($(sdnNode.children[i]).is(tag)) {
       return target = sdnNode.children[i];
     } else {
-        target = findTag(sdnNode.children[i], tag, depth + 1);
+      target = findTag(sdnNode.children[i], tag, depth + 1);
       if (target) return target;
     }
   }
@@ -75,16 +75,16 @@ function matchCountry(xml) {
     if (allSdnEntries[key].innerHTML) {
       //search for fields that may id the country of the sdnEntry
       var toAdd = findTag(allSdnEntries[key], 'country') || findTag(allSdnEntries[key], 'idCountry') || findTag(allSdnEntries[key], 'placeOfBirth') || findTag(allSdnEntries[key], 'program');
-        countryCont.forEach(function(country){
-          if (toAdd && country['name']===toAdd.innerHTML) {
-            country['children'] ? country['children'].push(toAdd) : country['children'] = [toAdd]
-          }
-        });
+      countryCont.forEach(function(country){
+        if (toAdd && country['name']===toAdd.innerHTML) {
+          country['children'] ? country['children'].push(toAdd) : country['children'] = [toAdd]
+        }
+      });
       searchResults.push(toAdd);
     }
   }
   //populate the countryCont array, which organized country lists by continent
-  countryCont.forEach(function(countryNode){
+  countryCont.forEach(function(countryNode) {
     contTree.children.forEach(function(coNode) {
       if (countryNode['cont']===coNode['name'] && countryNode.children) {
         coNode['children'].push(
@@ -281,7 +281,7 @@ var countries = [
   {"name": "Reunion", "code": "RE"}, 
   {"name": "Romania", "code": "RO"}, 
   {"name": "Russian Federation", "code": "RU"}, 
-  {"name": "RWANDA", "code": "RW"}, 
+  {"name": "Rwanda", "code": "RW"}, 
   {"name": "Saint Helena", "code": "SH"}, 
   {"name": "Saint Kitts and Nevis", "code": "KN"}, 
   {"name": "Saint Lucia", "code": "LC"}, 
