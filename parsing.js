@@ -34,15 +34,17 @@ contTree = {
     }
   ]       
 };
-  //Finds the root node of each match 
-  // function findRoot(node, result) {
-  //   if ($(node).is('sdnentry')) {
-  //     return node;
-  //   }
-  //   if (node.parentNode) return findRoot(node.parentNode);
-  // }
+
+// Finds the root node of each match 
+// function findRoot(node, result) {
+//   if ($(node).is('sdnentry')) {
+//     return node;
+//   }
+//   if (node.parentNode) return findRoot(node.parentNode);
+// }
+
 //gets the xml file
-function popNodes() {
+function getXML() {
   $.ajax({
       type: "GET",
       url: 'sdn.xml',
@@ -57,7 +59,7 @@ function findTag(sdnNode, tag, depth) {
   if ($(sdnNode).is(tag)) return sdnNode;
   for (var i = 0; i < sdnNode.children.length; i++) {
     if ($(sdnNode.children[i]).is(tag)) {
-       return target = sdnNode.children[i];
+      return target = sdnNode.children[i];
     } else {
         target = findTag(sdnNode.children[i], tag, depth + 1);
       if (target) return target;
@@ -71,15 +73,17 @@ function matchCountry(xml) {
   var allSdnEntries = $(xml).find('sdnEntry'); 
   for (var key in allSdnEntries) {
     if (allSdnEntries[key].innerHTML) {
+      //search for fields that may id the country of the sdnEntry
       var toAdd = findTag(allSdnEntries[key], 'country') || findTag(allSdnEntries[key], 'idCountry') || findTag(allSdnEntries[key], 'placeOfBirth') || findTag(allSdnEntries[key], 'program');
         countryCont.forEach(function(country){
-          if (country['name']===toAdd.innerHTML) {
+          if (toAdd && country['name']===toAdd.innerHTML) {
             country['children'] ? country['children'].push(toAdd) : country['children'] = [toAdd]
           }
         });
       searchResults.push(toAdd);
     }
   }
+  //populate the countryCont array, which organized country lists by continent
   countryCont.forEach(function(countryNode){
     contTree.children.forEach(function(coNode) {
       if (countryNode['cont']===coNode['name'] && countryNode.children) {
@@ -174,7 +178,7 @@ var countries = [
   {"name": "French Polynesia", "code": "PF"}, 
   {"name": "French Southern Territories", "code": "TF"}, 
   {"name": "Gabon", "code": "GA"}, 
-  {"name": "Gambia", "code": "GM"}, 
+  {"name": "The Gambia", "code": "GM"}, 
   {"name": "Georgia", "code": "GE"}, 
   {"name": "Germany", "code": "DE"}, 
   {"name": "Ghana", "code": "GH"}, 
@@ -307,9 +311,9 @@ var countries = [
   {"name": "Sweden", "code": "SE"}, 
   {"name": "Switzerland", "code": "CH"}, 
   {"name": "Syrian Arab Republic", "code": "SY"}, 
-  {"name": "Taiwan, Province of China", "code": "TW"}, 
+  {"name": "Taiwan", "code": "TW"}, 
   {"name": "Tajikistan", "code": "TJ"}, 
-  {"name": "Tanzania, United Republic of", "code": "TZ"}, 
+  {"name": "Tanzania", "code": "TZ"}, 
   {"name": "Thailand", "code": "TH"}, 
   {"name": "Timor-Leste", "code": "TL"}, 
   {"name": "Togo", "code": "TG"}, 
@@ -597,4 +601,4 @@ countries.forEach(function(obj) {
   newObj['cont'] = continents[obj['code']] 
   countryCont.push(newObj);
 });
-popNodes();
+getXML();

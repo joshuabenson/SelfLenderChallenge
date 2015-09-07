@@ -83,7 +83,6 @@ function init(root) {
     if (p.depth > 1) p = p.parent;
     if (!p.children) return;
     zoom(p, p);
-    // addLabels();
   }
 
   function zoomOut(p) {
@@ -114,6 +113,7 @@ function init(root) {
     }
 
     center.datum(root);
+    //add labels to continent group
     addLabels(p);
 
     // When zooming in, arcs enter from the outside and exit to the inside.
@@ -139,8 +139,8 @@ function init(root) {
         .each(function(d) { this._current = enterArc(d); });
 
       path.transition()
-          .style("fill-opacity", 1)
-          .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); });
+        .style("fill-opacity", 1)
+        .attrTween("d", function(d) { return arcTween.call(this, updateArc(d)); });
     });
   }
 }
